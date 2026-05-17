@@ -1,7 +1,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 
-const ignoredDirs = new Set([
+export const defaultIgnoredDirs = [
   '.git',
   'node_modules',
   'dist',
@@ -11,7 +11,9 @@ const ignoredDirs = new Set([
   '.turbo',
   '.venv',
   '__pycache__'
-]);
+];
+
+const ignoredDirs = new Set(defaultIgnoredDirs);
 
 export async function pathExists(filePath: string): Promise<boolean> {
   try {
