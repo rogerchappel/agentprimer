@@ -30,6 +30,14 @@
     "repository",
     "handoff"
   ],
+  "homepage": "https://github.com/rogerchappel/agentprimer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/agentprimer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/agentprimer/issues"
+  },
   "author": "Roger Chappel",
   "license": "MIT",
   "engines": {
