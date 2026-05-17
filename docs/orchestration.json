@@ -1,0 +1,34 @@
+{
+  "name": "agentprimer",
+  "purpose": "Generate local repository onboarding packets for coding agents and maintainers.",
+  "commands": [
+    {
+      "name": "scan-markdown",
+      "command": "agentprimer scan . --out docs/AGENT_PRIMER.md",
+      "writes": ["docs/AGENT_PRIMER.md"]
+    },
+    {
+      "name": "scan-json",
+      "command": "agentprimer scan . --format json",
+      "writes": []
+    },
+    {
+      "name": "suggest-task",
+      "command": "agentprimer suggest-task . --max-risk low",
+      "writes": []
+    }
+  ],
+  "safety": {
+    "network": false,
+    "llmCalls": false,
+    "defaultMutation": false,
+    "reviewBeforeSharing": true
+  },
+  "verification": [
+    "npm test",
+    "npm run check",
+    "npm run build",
+    "npm run smoke",
+    "bash scripts/validate.sh"
+  ]
+}
