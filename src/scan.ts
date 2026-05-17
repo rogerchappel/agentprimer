@@ -10,6 +10,7 @@ import {
   findRisks
 } from './detect.js';
 import { commandFromScripts, dependencyNames, detectPackageManager, packageEvidence, readPackageJson } from './package.js';
+import { ecosystemCommands } from './ecosystem.js';
 import type { RepoPrimer } from './types.js';
 
 const fixedTimestamp = '1970-01-01T00:00:00.000Z';
@@ -23,7 +24,7 @@ export async function scanRepo(inputRoot: string, options: ScanOptions = {}): Pr
   const files = await listRepoFiles(root);
   const pkg = await readPackageJson(root);
   const packageManager = await detectPackageManager(root);
-  const commands = commandFromScripts(pkg, packageManager);
+  const commands = [...commandFromScripts(pkg, packageManager), ...ecosystemCommands(files)];
   const commandEvidence = commands.flatMap((command) => command.evidence);
   const readme = await readTextIfExists(path.join(root, 'README.md'));
   const languages = detectLanguages(files);
