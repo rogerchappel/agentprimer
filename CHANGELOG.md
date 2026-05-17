@@ -9,13 +9,15 @@ format and uses semantic versioning when versioned releases are published.
 
 ### Added
 
-- Initial project setup.
+- StackForge OSS CLI scaffold.
+- Local-first `scan` command with Markdown and JSON output.
+- `suggest-task` command for conservative first tasks.
+- Node, Python, docs-only, and sparse repository fixtures.
+- Project-specific README, security policy, contribution guide, and orchestration docs.
 
 ## Release Links
 
 - Unreleased:
-  `https://github.com/rogerchappel/agentprimer/compare/...HEAD`
+  `https://github.com/rogerchappel/agentprimer/commits/main`
 - Latest release:
   `https://github.com/rogerchappel/agentprimer/releases/latest`
-
-Replace placeholder links once the first release tag exists.
