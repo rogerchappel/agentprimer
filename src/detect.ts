@@ -44,6 +44,9 @@ export function detectFrameworks(files: string[], dependencies: string[]): strin
   if (files.includes('Cargo.toml')) {
     frameworks.add('Rust crate');
   }
+  if (files.some((file) => /(^|\/)pnpm-workspace\.yaml$/.test(file)) || files.some((file) => /(^|\/)turbo\.json$/.test(file))) {
+    frameworks.add('JavaScript workspace');
+  }
 
   return [...frameworks].sort();
 }
