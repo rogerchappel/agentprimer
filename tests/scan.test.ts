@@ -36,4 +36,12 @@ describe('scanRepo', () => {
     assert.ok(primer.frameworks.includes('Go module'));
     assert.ok(primer.commands.some((command) => command.command === 'go test ./...'));
   });
+
+  it('detects Rust crate test commands', async () => {
+    const primer = await scanRepo('fixtures/rust-crate', { deterministicTime: true });
+
+    assert.ok(primer.languages.includes('Rust'));
+    assert.ok(primer.frameworks.includes('Rust crate'));
+    assert.ok(primer.commands.some((command) => command.command === 'cargo test'));
+  });
 });
