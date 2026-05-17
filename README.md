@@ -83,6 +83,7 @@ bash scripts/validate.sh
 - [Tasks](docs/TASKS.md)
 - [Orchestration](docs/ORCHESTRATION.md)
 - [Machine-readable orchestration](docs/orchestration.json)
+- [JSON output contract](docs/JSON_SCHEMA.md)
 
 ## Contributing
 
