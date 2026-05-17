@@ -28,4 +28,12 @@ describe('scanRepo', () => {
     assert.ok(primer.gaps.some((gap) => gap.path === 'AGENTS.md'));
     assert.ok(primer.gaps.some((gap) => gap.path === 'tests/'));
   });
+
+  it('detects Go module test commands', async () => {
+    const primer = await scanRepo('fixtures/go-module', { deterministicTime: true });
+
+    assert.ok(primer.languages.includes('Go'));
+    assert.ok(primer.frameworks.includes('Go module'));
+    assert.ok(primer.commands.some((command) => command.command === 'go test ./...'));
+  });
 });
