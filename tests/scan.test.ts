@@ -18,7 +18,7 @@ describe('scanRepo', () => {
 
     assert.ok(primer.languages.includes('Python'));
     assert.ok(primer.frameworks.includes('Python package'));
-    assert.equal(primer.commands.length, 0);
+    assert.ok(primer.commands.some((command) => command.command === 'python -m pytest'));
   });
 
   it('reports sparse onboarding gaps', async () => {
