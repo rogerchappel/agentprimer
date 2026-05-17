@@ -4,11 +4,11 @@
   "description": "Local-first repo onboarding packet CLI for coding agents.",
   "type": "module",
   "bin": {
-    "agentprimer": "./dist/index.js"
+    "agentprimer": "./dist/src/index.js"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/src/index.js",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/src/index.js"
   },
   "files": [
     "dist",
@@ -19,7 +19,7 @@
     "build": "tsc",
     "check": "tsc --noEmit",
     "test": "npm run build && node --test dist/tests/*.test.js",
-    "smoke": "npm run build && node dist/index.js scan fixtures/node-cli --out /tmp/agentprimer-smoke.md && node dist/index.js suggest-task fixtures/sparse-repo --max-risk low",
+    "smoke": "npm run build && node dist/src/index.js scan fixtures/node-cli --out /tmp/agentprimer-smoke.md && node dist/src/index.js suggest-task fixtures/sparse-repo --max-risk low",
     "package:smoke": "npm pack --dry-run",
     "release:check": "npm test && npm run check && npm run build && npm run smoke && npm run package:smoke"
   },

@@ -15,7 +15,7 @@ npm link
 Or run from a checkout:
 
 ```sh
-node dist/index.js scan .
+node dist/src/index.js scan .
 ```
 
 ## Use
