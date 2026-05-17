@@ -61,6 +61,8 @@ export function findConfigs(files: string[]): Evidence[] {
     /^Dockerfile$/,
     /^\.github\/workflows\/.+\.ya?ml$/,
     /^\.env\.example$/,
+    /^\.editorconfig$/,
+    /^\.gitignore$/,
     /^eslint\.config\./,
     /^vitest\.config\./
   ];
