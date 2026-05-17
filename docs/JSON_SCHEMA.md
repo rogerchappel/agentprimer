@@ -19,6 +19,7 @@
 - `risks`: areas worth extra review
 - `gaps`: missing onboarding affordances
 - `layout`: first-level directory snapshot
+- `ignoredDirectories`: generated/vendor directories skipped during walking
 
 ## Evidence Shape
 

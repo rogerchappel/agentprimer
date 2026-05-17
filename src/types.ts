@@ -30,6 +30,7 @@ export type RepoPrimer = {
   risks: Evidence[];
   gaps: Evidence[];
   layout: Evidence[];
+  ignoredDirectories: string[];
 };
 
 export type SuggestedTask = {

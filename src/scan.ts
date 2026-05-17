@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { dirnameSet, listRepoFiles, readTextIfExists } from './fs.js';
+import { defaultIgnoredDirs, dirnameSet, listRepoFiles, readTextIfExists } from './fs.js';
 import {
   detectFrameworks,
   detectLanguages,
@@ -46,7 +46,8 @@ export async function scanRepo(inputRoot: string, options: ScanOptions = {}): Pr
     configs: findConfigs(files),
     risks: findRisks(files),
     gaps: findGaps(files, commandEvidence),
-    layout
+    layout,
+    ignoredDirectories: defaultIgnoredDirs
   };
 }
 
