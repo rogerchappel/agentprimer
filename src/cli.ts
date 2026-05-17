@@ -32,7 +32,7 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<nu
 
 async function runScan(args: string[]): Promise<number> {
   const parsed = parseCommonArgs(args);
-  const primer = await scanRepo(parsed.root);
+  const primer = await scanRepo(parsed.root, { deterministicTime: parsed.deterministic });
   const output = parsed.format === 'json' ? renderJson(primer) : renderMarkdown(primer);
 
   if (parsed.out) {
@@ -48,7 +48,7 @@ async function runScan(args: string[]): Promise<number> {
 async function runSuggestTask(args: string[]): Promise<number> {
   const parsed = parseCommonArgs(args);
   const maxRisk = parseRisk(readOption(args, '--max-risk') ?? 'low');
-  const primer = await scanRepo(parsed.root);
+  const primer = await scanRepo(parsed.root, { deterministicTime: parsed.deterministic });
   const task = suggestTask(primer, maxRisk);
   const output = parsed.format === 'json' ? renderJson(task) : renderSuggestedTask(task);
 
@@ -62,14 +62,15 @@ async function runSuggestTask(args: string[]): Promise<number> {
   return 0;
 }
 
-function parseCommonArgs(args: string[]): { root: string; format: OutputFormat; out?: string } {
+function parseCommonArgs(args: string[]): { root: string; format: OutputFormat; out?: string; deterministic: boolean } {
   const positional = args.filter((arg, index) => !arg.startsWith('--') && !isOptionValue(args, index));
   const root = positional[0] ?? '.';
   const format = parseFormat(readOption(args, '--format') ?? 'markdown');
   return {
     root,
     format,
-    out: readOption(args, '--out')
+    out: readOption(args, '--out'),
+    deterministic: args.includes('--deterministic')
   };
 }
 
@@ -112,5 +113,6 @@ Examples:
   agentprimer scan . --out docs/AGENT_PRIMER.md
   agentprimer scan fixtures/node-cli --format json
   agentprimer suggest-task . --max-risk low
+  agentprimer scan . --format json --deterministic
 `;
 }
