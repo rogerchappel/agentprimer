@@ -1,38 +1,28 @@
 # Roadmap
 
 This roadmap describes intended direction, not a binding delivery promise.
-Review it regularly and update it as the project learns from users,
-contributors, and implementation constraints.
 
 ## Now
 
-- Define the smallest useful project scope.
-- Keep repository setup, documentation, and verification easy for contributors
-  to follow.
-- Ship small, reviewable improvements.
+- Ship the local-first scanner MVP.
+- Keep Markdown and JSON output stable enough for downstream tooling.
+- Cover Node CLI, Python package, docs-only, and sparse repositories with fixtures.
 
 ## Next
 
-- Add the next capabilities that directly support the project's primary users.
-- Improve tests, docs, and examples around the most used workflows.
-- Reduce setup friction discovered during early use.
+- Infer Python commands from `pyproject.toml` tool sections with better confidence labels.
+- Add workspace/package monorepo hints.
+- Add optional ignore patterns for large generated folders.
+- Publish a documented JSON schema once V1 fields settle.
 
 ## Later
 
-- Consider larger features after the core workflow is stable.
-- Add automation only where it removes repeated maintainer work.
-- Revisit packaging, deployment, or integration options based on real demand.
+- Add plugin-style detectors for ecosystems that need richer parsing.
+- Provide shell completion.
+- Explore editor/task-runner integrations without changing the local-first privacy model.
 
 ## Not Planned
 
-- Unrelated platform rewrites without a clear migration path.
-- Mandatory dependencies on a single ecosystem unless the project requires it.
-- Public release dates before maintainers are ready to commit to them.
-
-## Roadmap Review
-
-Before each major or meaningful minor release:
-
-- Move completed user-visible work into `CHANGELOG.md`.
-- Remove stale commitments.
-- Promote only the next reviewable set of work into `Now`.
+- LLM API calls in the default scan path.
+- Uploading repository contents.
+- Replacing human review or dedicated security scanners.
