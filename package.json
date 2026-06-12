@@ -28,8 +28,9 @@
     "check": "tsc --noEmit",
     "test": "npm run build && node --test dist/tests/*.test.js",
     "smoke": "npm run build && node dist/src/index.js scan fixtures/node-cli --out /tmp/agentprimer-smoke.md && node dist/src/index.js suggest-task fixtures/sparse-repo --max-risk low",
-    "package:smoke": "npm pack --dry-run",
-    "release:check": "npm test && npm run check && npm run build && npm run smoke && npm run package:smoke"
+    "package:smoke": "npm run build && npm pack --dry-run",
+    "release:check": "npm test && npm run check && npm run build && npm run smoke && npm run package:smoke",
+    "prepack": "npm run build"
   },
   "keywords": [
     "agent",
