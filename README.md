@@ -74,8 +74,13 @@ npm test
 npm run check
 npm run build
 npm run smoke
+npm run package:smoke
+npm run release:check
 bash scripts/validate.sh
 ```
+
+`npm run package:smoke` builds first, then performs an npm pack dry-run so the
+published entrypoint and type declarations are checked from fresh output.
 
 ## Docs
 
