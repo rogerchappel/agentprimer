@@ -38,6 +38,14 @@ Ask for a conservative first task:
 agentprimer suggest-task . --max-risk low
 ```
 
+Run the fixture-backed demo packet:
+
+```sh
+bash demo/run-primer-packet.sh
+```
+
+See [Create an Agent Onboarding Packet](docs/tutorials/create-agent-onboarding-packet.md) for the complete walkthrough.
+
 Example output starts like this:
 
 ```md
