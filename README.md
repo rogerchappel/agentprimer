@@ -53,6 +53,12 @@ Example output starts like this:
 
 Fixture Node CLI appears to be a Node CLI, TypeScript, JavaScript project.
 
+## Handoff Readiness
+
+- Score: 83/100
+- Pass: README is present (README.md)
+- Pass: Verification command is detected (package.json: script "test")
+
 ## Stack Signals
 
 - Languages: JavaScript, Markdown, TypeScript
@@ -70,6 +76,7 @@ Fixture Node CLI appears to be a Node CLI, TypeScript, JavaScript project.
 - likely entry points
 - risky surfaces such as release workflows and deployment files
 - missing onboarding gaps such as README, AGENTS.md, or tests
+- a handoff readiness score with concrete pass/fail checks for README, agent instructions, verification, entry points, tests, and visible risk surface
 
 ## Design Notes
 

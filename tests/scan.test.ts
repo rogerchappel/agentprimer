@@ -11,6 +11,9 @@ describe('scanRepo', () => {
     assert.ok(primer.languages.includes('TypeScript'));
     assert.ok(primer.frameworks.includes('Node CLI'));
     assert.ok(primer.commands.some((command) => command.name === 'test' && command.command === 'npm run test'));
+    assert.equal(primer.handoff.checks.find((check) => check.id === 'readme-present')?.passed, true);
+    assert.equal(primer.handoff.checks.find((check) => check.id === 'verification-command-detected')?.passed, true);
+    assert.ok(primer.handoff.score > 50);
   });
 
   it('detects Python packages without inventing Node commands', async () => {
@@ -27,6 +30,8 @@ describe('scanRepo', () => {
     assert.ok(primer.gaps.some((gap) => gap.path === 'README.md'));
     assert.ok(primer.gaps.some((gap) => gap.path === 'AGENTS.md'));
     assert.ok(primer.gaps.some((gap) => gap.path === 'tests/'));
+    assert.equal(primer.handoff.checks.find((check) => check.id === 'readme-present')?.passed, false);
+    assert.ok(primer.handoff.score < 50);
   });
 
   it('detects Go module test commands', async () => {

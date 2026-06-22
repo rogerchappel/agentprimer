@@ -9,6 +9,7 @@
 - `root`: absolute scanned path
 - `name`: package name or directory name
 - `summary`: short human-readable summary
+- `handoff`: readiness score plus evidence-linked checks for agent handoff
 - `languages`: detected language labels
 - `frameworks`: detected framework/tooling labels
 - `packageManager`: detected JavaScript package manager when present
@@ -31,3 +32,19 @@
 ```
 
 `detail` is optional. Paths are repository-relative except `root`.
+
+## Handoff Shape
+
+```json
+{
+  "score": 83,
+  "checks": [
+    {
+      "id": "verification-command-detected",
+      "label": "Verification command is detected",
+      "passed": true,
+      "evidence": [{ "path": "package.json", "detail": "script \"test\"" }]
+    }
+  ]
+}
+```

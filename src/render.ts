@@ -8,6 +8,12 @@ export function renderMarkdown(primer: RepoPrimer): string {
   const lines: string[] = [];
   lines.push(`# Agent Primer: ${primer.name}`, '');
   lines.push(primer.summary, '');
+  lines.push('## Handoff Readiness', '');
+  lines.push(`- Score: ${primer.handoff.score}/100`);
+  for (const check of primer.handoff.checks) {
+    lines.push(`- ${check.passed ? 'Pass' : 'Needs work'}: ${check.label}${check.evidence.length ? ` (${formatEvidence(check.evidence)})` : ''}`);
+  }
+  lines.push('');
   lines.push('## Stack Signals', '');
   lines.push(`- Languages: ${listOrNone(primer.languages)}`);
   lines.push(`- Frameworks: ${listOrNone(primer.frameworks)}`);
