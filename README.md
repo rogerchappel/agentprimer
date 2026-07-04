@@ -38,6 +38,12 @@ Ask for a conservative first task:
 agentprimer suggest-task . --max-risk low
 ```
 
+Gate a repository handoff in CI:
+
+```sh
+agentprimer validate . --min-score 80
+```
+
 Run the fixture-backed demo packet:
 
 ```sh
@@ -77,6 +83,7 @@ Fixture Node CLI appears to be a Node CLI, TypeScript, JavaScript project.
 - risky surfaces such as release workflows and deployment files
 - missing onboarding gaps such as README, AGENTS.md, or tests
 - a handoff readiness score with concrete pass/fail checks for README, agent instructions, verification, entry points, tests, and visible risk surface
+- a validation command that exits nonzero when a repository is not ready to hand to another agent
 
 ## Design Notes
 
