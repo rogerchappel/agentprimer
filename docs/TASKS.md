@@ -8,6 +8,8 @@
 - [x] Detect package metadata, package manager, scripts, languages, frameworks, config, entry points, risks, and onboarding gaps.
 - [x] Render concise Markdown and JSON packets.
 - [x] Score handoff readiness with evidence-linked pass/fail checks.
+- [x] Add `agentprimer validate` for CI-friendly handoff gates.
+- [x] Add an agent skill usage guide with side-effect boundaries.
 - [x] Implement `agentprimer suggest-task` for low-risk first tasks.
 - [x] Add representative fixtures for Node CLI, Python package, docs-only, and sparse repositories.
 - [x] Add tests and smoke scripts.
