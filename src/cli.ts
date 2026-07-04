@@ -22,6 +22,10 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<nu
     return runScan(rest);
   }
 
+  if (command === 'validate') {
+    return runValidate(rest);
+  }
+
   if (command === 'suggest-task') {
     return runSuggestTask(rest);
   }
@@ -43,6 +47,33 @@ async function runScan(args: string[]): Promise<number> {
   }
 
   return 0;
+}
+
+async function runValidate(args: string[]): Promise<number> {
+  const parsed = parseCommonArgs(args);
+  const minScore = parseMinScore(readOption(args, '--min-score') ?? '70');
+  const primer = await scanRepo(parsed.root, { deterministicTime: parsed.deterministic });
+  const failedChecks = primer.handoff.checks.filter((check) => !check.passed);
+  const passed = primer.handoff.score >= minScore && failedChecks.length === 0;
+  const result = {
+    name: primer.name,
+    score: primer.handoff.score,
+    minScore,
+    passed,
+    failedChecks
+  };
+  const output = parsed.format === 'json'
+    ? renderJson(result)
+    : renderValidation(result);
+
+  if (parsed.out) {
+    await mkdir(path.dirname(path.resolve(parsed.out)), { recursive: true });
+    await writeFile(parsed.out, output, 'utf8');
+  } else {
+    process.stdout.write(output);
+  }
+
+  return passed ? 0 : 2;
 }
 
 async function runSuggestTask(args: string[]): Promise<number> {
@@ -85,7 +116,7 @@ function readOption(args: string[], name: string): string | undefined {
 
 function isOptionValue(args: string[], index: number): boolean {
   const previous = args[index - 1];
-  return previous === '--format' || previous === '--out' || previous === '--max-risk';
+  return previous === '--format' || previous === '--out' || previous === '--max-risk' || previous === '--min-score';
 }
 
 function parseFormat(value: string): OutputFormat {
@@ -102,15 +133,48 @@ function parseRisk(value: string): RiskLevel {
   throw new Error(`Unsupported risk level: ${value}`);
 }
 
+function parseMinScore(value: string): number {
+  const score = Number(value);
+  if (!Number.isInteger(score) || score < 0 || score > 100) {
+    throw new Error(`Unsupported min score: ${value}`);
+  }
+  return score;
+}
+
+function renderValidation(result: {
+  name: string;
+  score: number;
+  minScore: number;
+  passed: boolean;
+  failedChecks: Array<{ label: string }>;
+}): string {
+  const lines = [
+    `# Agent Primer Validation: ${result.name}`,
+    '',
+    `- Score: ${result.score}/100`,
+    `- Required score: ${result.minScore}/100`,
+    `- Result: ${result.passed ? 'pass' : 'fail'}`,
+    ''
+  ];
+  if (result.failedChecks.length) {
+    lines.push('## Failed Checks', '');
+    for (const check of result.failedChecks) lines.push(`- ${check.label}`);
+    lines.push('');
+  }
+  return lines.join('\n');
+}
+
 function help(): string {
   return `agentprimer - local-first repo onboarding packets
 
 Usage:
   agentprimer scan [repo] [--format markdown|json] [--out file]
+  agentprimer validate [repo] [--min-score 0-100] [--format markdown|json]
   agentprimer suggest-task [repo] [--max-risk low|medium|high] [--format markdown|json]
 
 Examples:
   agentprimer scan . --out docs/AGENT_PRIMER.md
+  agentprimer validate . --min-score 80
   agentprimer scan fixtures/node-cli --format json
   agentprimer suggest-task . --max-risk low
   agentprimer scan . --format json --deterministic
