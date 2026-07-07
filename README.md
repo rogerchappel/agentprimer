@@ -89,6 +89,13 @@ Fixture Node CLI appears to be a Node CLI, TypeScript, JavaScript project.
 
 `agentprimer` stays deliberately boring. It does not infer intent from source code semantics, it does not inspect dependency graphs deeply, and it does not pretend a heuristic is a fact. Every useful claim should point back to a file.
 
+## Limitations
+
+- `agentprimer` summarizes repository signals; it does not understand product intent, hidden runtime behavior, or private operational context.
+- Detector output depends on files visible in the checkout. Generated packets can be stale if branches, dependencies, or CI configuration change after the scan.
+- Suggested tasks and readiness scores are review aids, not approval to modify code without reading the relevant files.
+- Review generated Markdown or JSON before sharing it, especially for internal paths, branch names, or command output copied from the repository.
+
 ## Verify
 
 ```sh
