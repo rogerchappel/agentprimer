@@ -21,6 +21,13 @@
 - `gaps`: missing onboarding affordances
 - `layout`: first-level directory snapshot
 - `ignoredDirectories`: generated/vendor directories skipped during walking
+- `scan`: scan coverage metadata with `truncated`, `fileLimit`, `filesDiscovered`, and `filesIncluded`
+
+The detector considers at most 800 prioritized file paths. When a repository has
+more files, `scan.truncated` is `true`; top-level files, likely entry points, test
+surfaces, source files, and workflow files are considered before other paths.
+`filesDiscovered` counts non-ignored files found, while `filesIncluded` is the
+number used by detectors.
 
 ## Evidence Shape
 
