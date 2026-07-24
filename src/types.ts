@@ -32,6 +32,12 @@ export type RepoPrimer = {
   gaps: Evidence[];
   layout: Evidence[];
   ignoredDirectories: string[];
+  scan: {
+    truncated: boolean;
+    fileLimit: number;
+    filesDiscovered: number;
+    filesIncluded: number;
+  };
 };
 
 export type HandoffReadiness = {
