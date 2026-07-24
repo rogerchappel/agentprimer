@@ -32,22 +32,21 @@ export async function readTextIfExists(filePath: string): Promise<string | undef
   }
 }
 
-export async function listRepoFiles(root: string, maxFiles = 800): Promise<string[]> {
+export type RepoFileList = {
+  files: string[];
+  truncated: boolean;
+  discoveredFileCount: number;
+  maxFiles: number;
+};
+
+export async function listRepoFiles(root: string, maxFiles = 800): Promise<RepoFileList> {
   const files: string[] = [];
 
   async function walk(dir: string): Promise<void> {
-    if (files.length >= maxFiles) {
-      return;
-    }
-
     const entries = await readdir(dir, { withFileTypes: true });
     entries.sort((a, b) => a.name.localeCompare(b.name));
 
     for (const entry of entries) {
-      if (files.length >= maxFiles) {
-        return;
-      }
-
       const absolute = path.join(dir, entry.name);
       const relative = path.relative(root, absolute).split(path.sep).join('/');
 
@@ -65,7 +64,26 @@ export async function listRepoFiles(root: string, maxFiles = 800): Promise<strin
   }
 
   await walk(root);
-  return files;
+  files.sort(compareScanPriority);
+  return {
+    files: files.slice(0, maxFiles),
+    truncated: files.length > maxFiles,
+    discoveredFileCount: files.length,
+    maxFiles
+  };
+}
+
+function compareScanPriority(left: string, right: string): number {
+  return scanPriority(left) - scanPriority(right) || left.localeCompare(right);
+}
+
+function scanPriority(file: string): number {
+  if (!file.includes('/')) return 0;
+  if (/^(src|app|pages|bin|cmd)\/(index|main|cli)\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs)$/.test(file)) return 1;
+  if (/(^|\/)(test|tests|__tests__)(\/|$)|\.(test|spec)\./i.test(file)) return 2;
+  if (/^(src|app|pages|bin|cmd)\//.test(file)) return 3;
+  if (/^\.github\/workflows\/.+\.ya?ml$/.test(file)) return 4;
+  return 5;
 }
 
 export function dirnameSet(files: string[]): string[] {

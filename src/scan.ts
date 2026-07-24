@@ -21,7 +21,8 @@ export type ScanOptions = {
 
 export async function scanRepo(inputRoot: string, options: ScanOptions = {}): Promise<RepoPrimer> {
   const root = path.resolve(inputRoot);
-  const files = await listRepoFiles(root);
+  const fileList = await listRepoFiles(root);
+  const files = fileList.files;
   const pkg = await readPackageJson(root);
   const packageManager = await detectPackageManager(root);
   const commands = [...commandFromScripts(pkg, packageManager), ...ecosystemCommands(files)];
@@ -61,7 +62,13 @@ export async function scanRepo(inputRoot: string, options: ScanOptions = {}): Pr
     risks,
     gaps,
     layout,
-    ignoredDirectories: defaultIgnoredDirs
+    ignoredDirectories: defaultIgnoredDirs,
+    scan: {
+      truncated: fileList.truncated,
+      fileLimit: fileList.maxFiles,
+      filesDiscovered: fileList.discoveredFileCount,
+      filesIncluded: files.length
+    }
   };
 }
 
