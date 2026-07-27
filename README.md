@@ -44,6 +44,11 @@ Gate a repository handoff in CI:
 agentprimer validate . --min-score 80
 ```
 
+Options may appear before or after the repository and accept either
+`--name value` or `--name=value`. Unknown options, missing option values, and
+option tokens supplied as values are usage errors: the CLI writes a concise
+message to stderr and exits with status 1.
+
 Run the fixture-backed demo packet:
 
 ```sh

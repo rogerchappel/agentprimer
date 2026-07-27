@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Reject unknown CLI options and missing option values, while consistently
+  supporting both spaced and equal-sign option syntax.
+
 All notable changes to this project will be documented in this file.
 
 This project follows the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
