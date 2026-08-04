@@ -1,6 +1,7 @@
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { CommandCandidate, Evidence } from './types.js';
-import { pathExists, readTextIfExists } from './fs.js';
+import { pathExists } from './fs.js';
 
 type PackageJson = {
   name?: string;
@@ -10,16 +11,26 @@ type PackageJson = {
 };
 
 export async function readPackageJson(root: string): Promise<PackageJson | undefined> {
-  const text = await readTextIfExists(path.join(root, 'package.json'));
-  if (!text) {
-    return undefined;
+  const manifestPath = path.join(root, 'package.json');
+  let text: string;
+  try {
+    text = await readFile(manifestPath, 'utf8');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return undefined;
+    }
+    throw new Error(`cannot read package manifest ${manifestPath}: ${errorMessage(error)}`);
   }
 
   try {
     return JSON.parse(text) as PackageJson;
-  } catch {
-    return undefined;
+  } catch (error) {
+    throw new Error(`invalid package manifest ${manifestPath}: ${errorMessage(error)}`);
   }
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 export async function detectPackageManager(root: string): Promise<string | undefined> {
