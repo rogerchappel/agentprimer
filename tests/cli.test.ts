@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import { describe, it } from 'node:test';
 
 const cli = ['dist/src/index.js'];
@@ -82,4 +85,24 @@ describe('CLI', () => {
     assert.equal(result.status, 1);
     assert.match(result.stderr, /Missing value for option: --format/);
   });
+
+  it('reports malformed package manifests on stderr without emitting a packet', () => {
+    const root = mkdtempSync(path.join(tmpdir(), 'agentprimer-cli-malformed-'));
+    try {
+      const manifestPath = path.join(root, 'package.json');
+      writeFileSync(manifestPath, '{ invalid json\n');
+
+      const result = run('scan', root, '--format', 'json');
+
+      assert.equal(result.status, 1);
+      assert.equal(result.stdout, '');
+      assert.match(result.stderr, new RegExp(`^agentprimer: invalid package manifest ${escapeRegex(manifestPath)}:`));
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
 });
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

@@ -1,6 +1,9 @@
 # JSON Output
 
 `agentprimer scan --format json` emits a stable object intended for local tooling.
+It emits no JSON when a present `package.json` cannot be read or parsed; the CLI
+writes a path-specific diagnostic to stderr and exits with status 1. A missing
+`package.json` is valid and does not prevent JSON output for non-Node repositories.
 
 ## Top-Level Fields
 

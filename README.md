@@ -49,6 +49,11 @@ Options may appear before or after the repository and accept either
 option tokens supplied as values are usage errors: the CLI writes a concise
 message to stderr and exits with status 1.
 
+Repositories do not need a `package.json`; non-Node repositories scan normally
+without one. If `package.json` is present but cannot be read or parsed,
+`scan`, `validate`, and `suggest-task` write a path-specific error to stderr,
+exit with status 1, and do not emit a normal packet.
+
 Run the fixture-backed demo packet:
 
 ```sh

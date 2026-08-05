@@ -53,6 +53,50 @@ describe('scanRepo', () => {
     assert.ok(primer.commands.some((command) => command.command === 'cargo test'));
   });
 
+  it('supports repositories without a package manifest', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-no-package-'));
+    try {
+      await writeFile(path.join(root, 'README.md'), '# No package manifest\n');
+
+      const primer = await scanRepo(root, { deterministicTime: true });
+
+      assert.equal(primer.name, path.basename(root));
+      assert.equal(primer.packageManager, undefined);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects malformed package manifests with their path', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-malformed-package-'));
+    const manifestPath = path.join(root, 'package.json');
+    try {
+      await writeFile(manifestPath, '{ invalid json\n');
+
+      await assert.rejects(
+        scanRepo(root, { deterministicTime: true }),
+        (error: Error) => error.message.startsWith(`invalid package manifest ${manifestPath}:`)
+      );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects an unreadable package manifest path', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-unreadable-package-'));
+    const manifestPath = path.join(root, 'package.json');
+    try {
+      await mkdir(manifestPath);
+
+      await assert.rejects(
+        scanRepo(root, { deterministicTime: true }),
+        (error: Error) => error.message.startsWith(`cannot read package manifest ${manifestPath}:`)
+      );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it('preserves high-value signals and reports truncation above the file limit', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-large-'));
     try {
