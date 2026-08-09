@@ -37,11 +37,27 @@ jobs:
         run: node /tmp/releasebox/bin/releasebox.js check .
       - name: Run release checks
         run: npm run release:check
-      - name: Build package
-        run: npm pack
+      - name: Build and inspect package
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          pack_json="$(npm pack --json)"
+          package_filename="$(node -e '
+            const fs = require("node:fs");
+            const result = JSON.parse(fs.readFileSync(0, "utf8"));
+            if (!Array.isArray(result) || result.length !== 1 || !result[0].filename) {
+              throw new Error("npm pack must produce exactly one package filename");
+            }
+            process.stdout.write(result[0].filename);
+          ' <<<"$pack_json")"
+          test -f "$package_filename"
+          printf 'filename=%s\n' "$package_filename" >> "$GITHUB_OUTPUT"
+      - name: Publish package to npm
+        run: npm publish "${{ steps.package.outputs.filename }}" --access public --provenance
       - name: Generate release notes
         run: node /tmp/releasebox/bin/releasebox.js notes . > RELEASE_NOTES.md
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" --notes-file RELEASE_NOTES.md *.tgz
+        run: gh release create "${GITHUB_REF_NAME}" --notes-file RELEASE_NOTES.md "${{ steps.package.outputs.filename }}"
