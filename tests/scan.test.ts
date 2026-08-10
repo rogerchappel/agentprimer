@@ -19,6 +19,52 @@ describe('scanRepo', () => {
     assert.ok(primer.handoff.score > 50);
   });
 
+  it('does not infer frameworks or entry points from ambiguous path names', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-ambiguous-paths-'));
+    try {
+      await Promise.all([
+        mkdir(path.join(root, 'app')),
+        mkdir(path.join(root, 'src'))
+      ]);
+      await Promise.all([
+        writeFile(path.join(root, 'README.md'), '# Plain project\n'),
+        writeFile(path.join(root, 'app', 'notes.txt'), 'project notes\n'),
+        writeFile(path.join(root, 'src', 'client.ts'), 'export const client = {};\n')
+      ]);
+
+      const primer = await scanRepo(root, { deterministicTime: true });
+
+      assert.ok(!primer.frameworks.includes('Next.js'));
+      assert.ok(!primer.frameworks.includes('Node CLI'));
+      assert.ok(!primer.entryPoints.some((entry) => entry.path === 'app/notes.txt'));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('detects Next.js and its recognized route entry points', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-next-'));
+    try {
+      await Promise.all([
+        mkdir(path.join(root, 'app')),
+        mkdir(path.join(root, 'pages'))
+      ]);
+      await Promise.all([
+        writeFile(path.join(root, 'package.json'), JSON.stringify({ dependencies: { next: '15.0.0' } })),
+        writeFile(path.join(root, 'app', 'page.tsx'), 'export default function Page() { return null; }\n'),
+        writeFile(path.join(root, 'pages', 'about.tsx'), 'export default function About() { return null; }\n')
+      ]);
+
+      const primer = await scanRepo(root, { deterministicTime: true });
+
+      assert.ok(primer.frameworks.includes('Next.js'));
+      assert.ok(primer.entryPoints.some((entry) => entry.path === 'app/page.tsx'));
+      assert.ok(primer.entryPoints.some((entry) => entry.path === 'pages/about.tsx'));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it('detects Python packages without inventing Node commands', async () => {
     const primer = await scanRepo('fixtures/python-package', { deterministicTime: true });
 
