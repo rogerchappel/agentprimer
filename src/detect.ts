@@ -29,10 +29,10 @@ export function detectFrameworks(files: string[], dependencies: string[]): strin
   if (deps.has('react') || files.some((file) => file.endsWith('.tsx'))) {
     frameworks.add('React');
   }
-  if (deps.has('next') || files.some((file) => file.startsWith('app/') || file.startsWith('pages/'))) {
+  if (deps.has('next') || files.some(isNextEntryPoint)) {
     frameworks.add('Next.js');
   }
-  if (deps.has('commander') || deps.has('yargs') || files.some((file) => file.includes('cli'))) {
+  if (deps.has('commander') || deps.has('yargs') || files.some(isNodeCliEntryPoint)) {
     frameworks.add('Node CLI');
   }
   if (files.includes('pyproject.toml')) {
@@ -80,20 +80,30 @@ export function findConventions(files: string[]): Evidence[] {
 
 export function findEntryPoints(files: string[]): Evidence[] {
   const patterns = [
-    /^src\/index\.(ts|js)$/,
-    /^src\/cli\.(ts|js)$/,
-    /^src\/main\.(ts|js|py)$/,
-    /^index\.(ts|js)$/,
-    /^bin\//,
-    /^app\//,
-    /^pages\//,
-    /^cmd\//
+    /^src\/index\.(ts|tsx|js|jsx|mjs|cjs)$/,
+    /^src\/cli\.(ts|js|mjs|cjs)$/,
+    /^src\/main\.(ts|js|mjs|cjs|py)$/,
+    /^index\.(ts|tsx|js|jsx|mjs|cjs)$/,
+    /^bin\/[^/]+\.(ts|js|mjs|cjs|py|sh)$/,
+    /^app\/(?:.+\/)?(?:page|layout|route|loading|error|not-found|template|default)\.(ts|tsx|js|jsx)$/,
+    /^pages\/(?!api\/).+\.(ts|tsx|js|jsx)$/,
+    /^pages\/api\/.+\.(ts|js)$/,
+    /^cmd\/.+\.(go|rs|py|ts|js)$/
   ];
 
   return files
     .filter((file) => patterns.some((pattern) => pattern.test(file)))
     .slice(0, 12)
     .map((file) => ({ path: file }));
+}
+
+function isNextEntryPoint(file: string): boolean {
+  return /^app\/(?:.+\/)?(?:page|layout|route|loading|error|not-found|template|default)\.(ts|tsx|js|jsx)$/.test(file)
+    || /^pages\/.+\.(ts|tsx|js|jsx)$/.test(file);
+}
+
+function isNodeCliEntryPoint(file: string): boolean {
+  return /^(?:src\/cli|bin\/[^/]+)\.(ts|js|mjs|cjs)$/.test(file);
 }
 
 export function findRisks(files: string[]): Evidence[] {

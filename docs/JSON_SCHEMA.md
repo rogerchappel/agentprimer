@@ -32,6 +32,11 @@ surfaces, source files, and workflow files are considered before other paths.
 `filesDiscovered` counts non-ignored files found, while `filesIncluded` is the
 number used by detectors.
 
+Framework and entry-point detection uses concrete signals such as package
+dependencies and recognized source filenames. A directory named `app`,
+`pages`, `bin`, or `cmd` does not by itself establish a framework or make every
+file below it an entry point.
+
 ## Evidence Shape
 
 ```json
