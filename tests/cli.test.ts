@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 
-const cli = ['dist/src/index.js'];
+const cli = ['dist/src/cli-entry.js'];
 
 describe('CLI', () => {
   function run(...args: string[]) {
