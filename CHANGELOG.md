@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Separate the import-safe library entrypoint from the executable CLI wrapper,
+  and exclude compiled tests from published packages.
 - Reject unknown CLI options and missing option values, while consistently
   supporting both spaced and equal-sign option syntax.
 

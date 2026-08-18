@@ -23,7 +23,7 @@ Sparse repositories produce conservative suggestions because AgentPrimer only re
 ## Emit JSON for another tool
 
 ```sh
-node dist/src/index.js scan fixtures/python-package --format json --deterministic > /tmp/python-package-primer.json
+node dist/src/cli-entry.js scan fixtures/python-package --format json --deterministic > /tmp/python-package-primer.json
 ```
 
 JSON output is useful when another local tool wants to consume the packet.

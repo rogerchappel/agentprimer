@@ -4,7 +4,7 @@
   "description": "Local-first repo onboarding packet CLI for coding agents.",
   "type": "module",
   "bin": {
-    "agentprimer": "./dist/src/index.js"
+    "agentprimer": "./dist/src/cli-entry.js"
   },
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -15,7 +15,7 @@
     }
   },
   "files": [
-    "dist",
+    "dist/src",
     "README.md",
     "LICENSE",
     "SECURITY.md",
@@ -27,8 +27,8 @@
     "build": "tsc",
     "check": "tsc --noEmit",
     "test": "npm run build && node --test dist/tests/*.test.js",
-    "smoke": "npm run build && node dist/src/index.js scan fixtures/node-cli --out /tmp/agentprimer-smoke.md && node dist/src/index.js suggest-task fixtures/sparse-repo --max-risk low",
-    "package:smoke": "npm run build && node scripts/verify-package-bin.mjs && npm pack --dry-run",
+    "smoke": "npm run build && node dist/src/cli-entry.js scan fixtures/node-cli --out /tmp/agentprimer-smoke.md && node dist/src/cli-entry.js suggest-task fixtures/sparse-repo --max-risk low",
+    "package:smoke": "npm run build && node scripts/verify-package-bin.mjs",
     "release:check": "npm test && npm run check && npm run build && npm run smoke && npm run package:smoke",
     "prepack": "npm run build",
     "lint": "npm run check"
