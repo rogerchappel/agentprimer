@@ -9,7 +9,7 @@ npm run build >/dev/null
 out_dir="${TMPDIR:-/tmp}/agentprimer-demo"
 mkdir -p "$out_dir"
 
-node dist/src/index.js scan fixtures/node-cli \
+node dist/src/cli-entry.js scan fixtures/node-cli \
   --deterministic \
   --out "$out_dir/node-cli-primer.md"
 
