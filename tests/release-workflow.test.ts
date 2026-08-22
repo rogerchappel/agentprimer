@@ -40,3 +40,14 @@ test('release workflow reuses the single inspected npm pack filename', async () 
   );
   assert.doesNotMatch(workflow, /\*\.tgz/);
 });
+
+test('release workflow installs and verifies trusted-publishing npm before npm ci', async () => {
+  const workflow = await readFile(workflowPath, 'utf8');
+  const installNpm = workflow.indexOf('npm install --global npm@11.5.1');
+  const verifyNpm = workflow.indexOf('npm --version');
+  const installDependencies = workflow.indexOf('npm ci');
+
+  assert.ok(installNpm >= 0, 'expected a pinned trusted-publishing npm CLI install');
+  assert.ok(verifyNpm > installNpm, 'npm version verification must follow npm installation');
+  assert.ok(installDependencies > verifyNpm, 'trusted-publishing npm setup must precede npm ci');
+});
