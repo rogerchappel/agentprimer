@@ -50,6 +50,28 @@ describe('CLI', () => {
     assert.ok(parsed.score >= 50);
   });
 
+  it('uses the configured minimum score as the validation gate', () => {
+    const passing = run('validate', 'fixtures/docs-only', '--min-score', '17', '--format', 'json');
+
+    assert.equal(passing.status, 0);
+    const parsed = JSON.parse(passing.stdout) as {
+      passed: boolean;
+      score: number;
+      failedChecks: Array<{ label: string }>;
+    };
+    assert.equal(parsed.score, 17);
+    assert.equal(parsed.passed, true);
+    assert.ok(parsed.failedChecks.length > 0);
+
+    const failing = run('validate', 'fixtures/docs-only', '--min-score', '18');
+
+    assert.equal(failing.status, 2);
+    assert.match(failing.stdout, /Score: 17\/100/);
+    assert.match(failing.stdout, /Required score: 18\/100/);
+    assert.match(failing.stdout, /Result: fail/);
+    assert.match(failing.stdout, /Agent instructions are present/);
+  });
+
   it('accepts options before the repo and equal-sign values', () => {
     const result = run('scan', '--format=json', '--deterministic', 'fixtures/node-cli');
 

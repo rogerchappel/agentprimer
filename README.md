@@ -44,6 +44,11 @@ Gate a repository handoff in CI:
 agentprimer validate . --min-score 80
 ```
 
+`validate` exits successfully when the handoff score meets the configured
+`--min-score` (70 by default) and exits with status 2 when it does not. Failed
+checks remain in JSON and text output as guidance, even when the score passes
+the threshold.
+
 Options may appear before or after the repository and accept either
 `--name value` or `--name=value`. Unknown options, missing option values, and
 option tokens supplied as values are usage errors: the CLI writes a concise
