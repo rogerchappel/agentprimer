@@ -54,7 +54,7 @@ async function runValidate(args: string[]): Promise<number> {
   const minScore = parseMinScore(parsed.options.get('--min-score') ?? '70');
   const primer = await scanRepo(parsed.root, { deterministicTime: parsed.deterministic });
   const failedChecks = primer.handoff.checks.filter((check) => !check.passed);
-  const passed = primer.handoff.score >= minScore && failedChecks.length === 0;
+  const passed = primer.handoff.score >= minScore;
   const result = {
     name: primer.name,
     score: primer.handoff.score,
@@ -193,5 +193,7 @@ Examples:
   agentprimer scan fixtures/node-cli --format json
   agentprimer suggest-task . --max-risk low
   agentprimer scan . --format json --deterministic
+
+Validation passes when the handoff score meets --min-score. Failed checks remain in the output as guidance.
 `;
 }
