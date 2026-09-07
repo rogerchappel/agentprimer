@@ -19,6 +19,13 @@ describe('scanRepo', () => {
     assert.ok(primer.handoff.score > 50);
   });
 
+  it('does not infer React or Next.js from generic TSX and pages paths', async () => {
+    const primer = await scanRepo('fixtures/generic-tsx', { deterministicTime: true });
+
+    assert.deepEqual(primer.frameworks, []);
+    assert.equal(primer.summary, 'Repository appears to use TypeScript.');
+  });
+
   it('does not infer frameworks or entry points from ambiguous path names', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-ambiguous-paths-'));
     try {
