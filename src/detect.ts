@@ -25,11 +25,12 @@ export function detectLanguages(files: string[]): string[] {
 export function detectFrameworks(files: string[], dependencies: string[]): string[] {
   const deps = new Set(dependencies);
   const frameworks = new Set<string>();
+  const hasNextEvidence = deps.has('next') || files.some(isNextConfig) || files.some(isNextEntryPoint);
 
-  if (deps.has('react') || files.some((file) => file.endsWith('.tsx'))) {
+  if (deps.has('react') || deps.has('react-dom') || hasNextEvidence) {
     frameworks.add('React');
   }
-  if (deps.has('next') || files.some(isNextEntryPoint)) {
+  if (hasNextEvidence) {
     frameworks.add('Next.js');
   }
   if (deps.has('commander') || deps.has('yargs') || files.some(isNodeCliEntryPoint)) {
@@ -99,7 +100,12 @@ export function findEntryPoints(files: string[]): Evidence[] {
 
 function isNextEntryPoint(file: string): boolean {
   return /^app\/(?:.+\/)?(?:page|layout|route|loading|error|not-found|template|default)\.(ts|tsx|js|jsx)$/.test(file)
-    || /^pages\/.+\.(ts|tsx|js|jsx)$/.test(file);
+    || /^pages\/(?:_app|_document|_error)\.(ts|tsx|js|jsx)$/.test(file)
+    || /^pages\/api\/.+\.(ts|js)$/.test(file);
+}
+
+function isNextConfig(file: string): boolean {
+  return /^next\.config\.(js|mjs|cjs|ts)$/.test(file);
 }
 
 function isNodeCliEntryPoint(file: string): boolean {
