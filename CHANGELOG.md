@@ -14,6 +14,10 @@ format and uses semantic versioning when versioned releases are published.
 
 ## [Unreleased]
 
+### Fixed
+
+- Require React and Next.js-specific evidence instead of inferring frameworks from every TSX file or ordinary `pages/` path.
+
 ### Added
 
 - StackForge OSS CLI scaffold.
