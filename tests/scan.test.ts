@@ -34,7 +34,9 @@ describe('scanRepo', () => {
 
       await writeFile(path.join(root, 'package.json'), JSON.stringify({ private: true }));
       await writeFile(path.join(root, 'next.config.mjs'), 'export default {};\n');
-      assert.deepEqual((await scanRepo(root, { deterministicTime: true })).frameworks, ['Next.js', 'React']);
+      const configuredNext = await scanRepo(root, { deterministicTime: true });
+      assert.deepEqual(configuredNext.frameworks, ['Next.js', 'React']);
+      assert.ok(configuredNext.configs.some((config) => config.path === 'next.config.mjs'));
 
       await rm(path.join(root, 'next.config.mjs'));
       await mkdir(path.join(root, 'app'));
