@@ -26,6 +26,25 @@ describe('scanRepo', () => {
     assert.equal(primer.summary, 'Repository appears to use TypeScript.');
   });
 
+  it('detects React and Next.js from framework-specific evidence', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-framework-evidence-'));
+    try {
+      await writeFile(path.join(root, 'package.json'), JSON.stringify({ dependencies: { react: '19.0.0' } }));
+      assert.deepEqual((await scanRepo(root, { deterministicTime: true })).frameworks, ['React']);
+
+      await writeFile(path.join(root, 'package.json'), JSON.stringify({ private: true }));
+      await writeFile(path.join(root, 'next.config.mjs'), 'export default {};\n');
+      assert.deepEqual((await scanRepo(root, { deterministicTime: true })).frameworks, ['Next.js', 'React']);
+
+      await rm(path.join(root, 'next.config.mjs'));
+      await mkdir(path.join(root, 'app'));
+      await writeFile(path.join(root, 'app', 'page.tsx'), 'export default function Page() { return null; }\n');
+      assert.deepEqual((await scanRepo(root, { deterministicTime: true })).frameworks, ['Next.js', 'React']);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it('does not infer frameworks or entry points from ambiguous path names', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'agentprimer-ambiguous-paths-'));
     try {
