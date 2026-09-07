@@ -65,6 +65,7 @@ export function findConfigs(files: string[]): Evidence[] {
     /^\.editorconfig$/,
     /^\.gitignore$/,
     /^eslint\.config\./,
+    /^next\.config\.(js|mjs|cjs|ts)$/,
     /^vitest\.config\./
   ];
 
