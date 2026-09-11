@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { scanRepo } from './scan.js';
 import { renderJson, renderMarkdown, renderSuggestedTask } from './render.js';
@@ -14,7 +14,7 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<nu
   }
 
   if (command === '--version' || command === '-v') {
-    process.stdout.write('0.1.0\n');
+    process.stdout.write(`${await packageVersion()}\n`);
     return 0;
   }
 
@@ -32,6 +32,16 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<nu
 
   process.stderr.write(`Unknown command: ${command}\n\n${help()}`);
   return 1;
+}
+
+async function packageVersion(): Promise<string> {
+  const manifest = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8')) as {
+    version?: unknown;
+  };
+  if (typeof manifest.version !== 'string' || manifest.version.length === 0) {
+    throw new Error('package.json is missing a version field');
+  }
+  return manifest.version;
 }
 
 async function runScan(args: string[]): Promise<number> {
