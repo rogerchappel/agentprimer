@@ -72,17 +72,21 @@ Example output starts like this:
 ```md
 # Agent Primer: fixture-node-cli
 
-Fixture Node CLI appears to be a Node CLI, TypeScript, JavaScript project.
+Fixture Node CLI appears to be a Node CLI, Markdown, TypeScript project.
 
 ## Handoff Readiness
 
-- Score: 83/100
+- Score: 100/100
 - Pass: README is present (README.md)
-- Pass: Verification command is detected (package.json: script "test")
+- Pass: Agent instructions are present (AGENTS.md)
+- Pass: Verification command is detected (package.json: scripts.test: node --test; package.json: scripts.build: tsc; package.json: scripts.smoke: node dist/index.js --help)
+- Pass: Likely entry point is detected (src/index.ts)
+- Pass: Test surface is present (tests/index.test.ts)
+- Pass: Risk surface is visible (package.json)
 
 ## Stack Signals
 
-- Languages: JavaScript, Markdown, TypeScript
+- Languages: Markdown, TypeScript
 - Frameworks: Node CLI
 - Package manager: npm
 ```
