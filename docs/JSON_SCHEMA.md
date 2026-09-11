@@ -52,13 +52,17 @@ file below it an entry point.
 
 ```json
 {
-  "score": 83,
+  "score": 100,
   "checks": [
     {
       "id": "verification-command-detected",
       "label": "Verification command is detected",
       "passed": true,
-      "evidence": [{ "path": "package.json", "detail": "script \"test\"" }]
+      "evidence": [
+        { "path": "package.json", "detail": "scripts.test: node --test" },
+        { "path": "package.json", "detail": "scripts.build: tsc" },
+        { "path": "package.json", "detail": "scripts.smoke: node dist/index.js --help" }
+      ]
     }
   ]
 }
