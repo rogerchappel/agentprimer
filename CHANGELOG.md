@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Regenerate the README example and the `docs/JSON_SCHEMA.md` handoff example
+  from the live `fixtures/node-cli` scan output, and pin both (plus `--version`
+  against `package.json`) with a documentation regression test.
+- Derive CLI `--version` from `package.json` instead of a hardcoded literal, and
+  make `scripts/verify-package-bin.mjs` execute each declared bin end-to-end
+  (`--version` and `--help`) rather than only checking that the target exists.
 - Separate the import-safe library entrypoint from the executable CLI wrapper,
   and exclude compiled tests from published packages.
 - Reject unknown CLI options and missing option values, while consistently
