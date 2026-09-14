@@ -7,7 +7,7 @@ AgentPrimer reads repository files and emits a compact packet for coding agents:
 ```sh
 npm install
 npm run build
-node dist/src/cli-entry.js scan fixtures/node-cli --deterministic --out /tmp/node-cli-primer.md
+node dist/src/index.js scan fixtures/node-cli --deterministic --out /tmp/node-cli-primer.md
 ```
 
 The Node CLI fixture includes package metadata, scripts, tests, source files, and `AGENTS.md`, so the primer has concrete evidence to summarize.
@@ -15,7 +15,7 @@ The Node CLI fixture includes package metadata, scripts, tests, source files, an
 ## Generate a first safe task
 
 ```sh
-node dist/src/cli-entry.js suggest-task fixtures/sparse-repo --max-risk low --deterministic --out /tmp/sparse-task.md
+node dist/src/index.js suggest-task fixtures/sparse-repo --max-risk low --deterministic --out /tmp/sparse-task.md
 ```
 
 Sparse repositories produce conservative suggestions because AgentPrimer only reports what it can infer from files.
@@ -23,7 +23,7 @@ Sparse repositories produce conservative suggestions because AgentPrimer only re
 ## Emit JSON for another tool
 
 ```sh
-node dist/src/cli-entry.js scan fixtures/python-package --format json --deterministic > /tmp/python-package-primer.json
+node dist/src/index.js scan fixtures/python-package --format json --deterministic > /tmp/python-package-primer.json
 ```
 
 JSON output is useful when another local tool wants to consume the packet.

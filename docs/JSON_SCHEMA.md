@@ -1,9 +1,6 @@
 # JSON Output
 
 `agentprimer scan --format json` emits a stable object intended for local tooling.
-It emits no JSON when a present `package.json` cannot be read or parsed; the CLI
-writes a path-specific diagnostic to stderr and exits with status 1. A missing
-`package.json` is valid and does not prevent JSON output for non-Node repositories.
 
 ## Top-Level Fields
 
@@ -12,7 +9,6 @@ writes a path-specific diagnostic to stderr and exits with status 1. A missing
 - `root`: absolute scanned path
 - `name`: package name or directory name
 - `summary`: short human-readable summary
-- `handoff`: readiness score plus evidence-linked checks for agent handoff
 - `languages`: detected language labels
 - `frameworks`: detected framework/tooling labels
 - `packageManager`: detected JavaScript package manager when present
@@ -24,18 +20,6 @@ writes a path-specific diagnostic to stderr and exits with status 1. A missing
 - `gaps`: missing onboarding affordances
 - `layout`: first-level directory snapshot
 - `ignoredDirectories`: generated/vendor directories skipped during walking
-- `scan`: scan coverage metadata with `truncated`, `fileLimit`, `filesDiscovered`, and `filesIncluded`
-
-The detector considers at most 800 prioritized file paths. When a repository has
-more files, `scan.truncated` is `true`; top-level files, likely entry points, test
-surfaces, source files, and workflow files are considered before other paths.
-`filesDiscovered` counts non-ignored files found, while `filesIncluded` is the
-number used by detectors.
-
-Framework and entry-point detection uses concrete signals such as package
-dependencies and recognized source filenames. A directory named `app`,
-`pages`, `bin`, or `cmd` does not by itself establish a framework or make every
-file below it an entry point.
 
 ## Evidence Shape
 
@@ -47,23 +31,3 @@ file below it an entry point.
 ```
 
 `detail` is optional. Paths are repository-relative except `root`.
-
-## Handoff Shape
-
-```json
-{
-  "score": 100,
-  "checks": [
-    {
-      "id": "verification-command-detected",
-      "label": "Verification command is detected",
-      "passed": true,
-      "evidence": [
-        { "path": "package.json", "detail": "scripts.test: node --test" },
-        { "path": "package.json", "detail": "scripts.build: tsc" },
-        { "path": "package.json", "detail": "scripts.smoke: node dist/index.js --help" }
-      ]
-    }
-  ]
-}
-```

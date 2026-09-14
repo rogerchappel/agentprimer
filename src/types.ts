@@ -20,7 +20,6 @@ export type RepoPrimer = {
   root: string;
   name: string;
   summary: string;
-  handoff: HandoffReadiness;
   languages: string[];
   frameworks: string[];
   packageManager?: string;
@@ -32,24 +31,6 @@ export type RepoPrimer = {
   gaps: Evidence[];
   layout: Evidence[];
   ignoredDirectories: string[];
-  scan: {
-    truncated: boolean;
-    fileLimit: number;
-    filesDiscovered: number;
-    filesIncluded: number;
-  };
-};
-
-export type HandoffReadiness = {
-  score: number;
-  checks: HandoffCheck[];
-};
-
-export type HandoffCheck = {
-  id: string;
-  label: string;
-  passed: boolean;
-  evidence: Evidence[];
 };
 
 export type SuggestedTask = {
