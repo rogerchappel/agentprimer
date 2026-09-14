@@ -15,7 +15,7 @@ npm link
 Or run from a checkout:
 
 ```sh
-node dist/src/cli-entry.js scan .
+node dist/src/index.js scan .
 ```
 
 ## Use
@@ -38,27 +38,6 @@ Ask for a conservative first task:
 agentprimer suggest-task . --max-risk low
 ```
 
-Gate a repository handoff in CI:
-
-```sh
-agentprimer validate . --min-score 80
-```
-
-`validate` exits successfully when the handoff score meets the configured
-`--min-score` (70 by default) and exits with status 2 when it does not. Failed
-checks remain in JSON and text output as guidance, even when the score passes
-the threshold.
-
-Options may appear before or after the repository and accept either
-`--name value` or `--name=value`. Unknown options, missing option values, and
-option tokens supplied as values are usage errors: the CLI writes a concise
-message to stderr and exits with status 1.
-
-Repositories do not need a `package.json`; non-Node repositories scan normally
-without one. If `package.json` is present but cannot be read or parsed,
-`scan`, `validate`, and `suggest-task` write a path-specific error to stderr,
-exit with status 1, and do not emit a normal packet.
-
 Run the fixture-backed demo packet:
 
 ```sh
@@ -72,21 +51,11 @@ Example output starts like this:
 ```md
 # Agent Primer: fixture-node-cli
 
-Fixture Node CLI appears to be a Node CLI, Markdown, TypeScript project.
-
-## Handoff Readiness
-
-- Score: 100/100
-- Pass: README is present (README.md)
-- Pass: Agent instructions are present (AGENTS.md)
-- Pass: Verification command is detected (package.json: scripts.test: node --test; package.json: scripts.build: tsc; package.json: scripts.smoke: node dist/index.js --help)
-- Pass: Likely entry point is detected (src/index.ts)
-- Pass: Test surface is present (tests/index.test.ts)
-- Pass: Risk surface is visible (package.json)
+Fixture Node CLI appears to be a Node CLI, TypeScript, JavaScript project.
 
 ## Stack Signals
 
-- Languages: Markdown, TypeScript
+- Languages: JavaScript, Markdown, TypeScript
 - Frameworks: Node CLI
 - Package manager: npm
 ```
@@ -101,21 +70,10 @@ Fixture Node CLI appears to be a Node CLI, Markdown, TypeScript project.
 - likely entry points
 - risky surfaces such as release workflows and deployment files
 - missing onboarding gaps such as README, AGENTS.md, or tests
-- a handoff readiness score with concrete pass/fail checks for README, agent instructions, verification, entry points, tests, and visible risk surface
-- a validation command that exits nonzero when a repository is not ready to hand to another agent
 
 ## Design Notes
 
 `agentprimer` stays deliberately boring. It does not infer intent from source code semantics, it does not inspect dependency graphs deeply, and it does not pretend a heuristic is a fact. Every useful claim should point back to a file.
-
-## Limitations
-
-- `agentprimer` summarizes repository signals; it does not understand product intent, hidden runtime behavior, or private operational context.
-- Detector output depends on files visible in the checkout. Generated packets can be stale if branches, dependencies, or CI configuration change after the scan.
-- Detection analyzes at most 800 prioritized file paths. Top-level metadata, likely entry points, tests, source files, and workflows take priority; JSON and Markdown output report when the scan is truncated.
-- Framework labels require package dependencies, framework configuration, or recognized source entry files. A generic TSX file or ordinary `pages/` path alone is not treated as React or Next.js evidence.
-- Suggested tasks and readiness scores are review aids, not approval to modify code without reading the relevant files.
-- Review generated Markdown or JSON before sharing it, especially for internal paths, branch names, or command output copied from the repository.
 
 ## Verify
 

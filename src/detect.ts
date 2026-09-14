@@ -25,15 +25,14 @@ export function detectLanguages(files: string[]): string[] {
 export function detectFrameworks(files: string[], dependencies: string[]): string[] {
   const deps = new Set(dependencies);
   const frameworks = new Set<string>();
-  const hasNextEvidence = deps.has('next') || files.some(isNextConfig) || files.some(isNextEntryPoint);
 
-  if (deps.has('react') || deps.has('react-dom') || hasNextEvidence) {
+  if (deps.has('react') || files.some((file) => file.endsWith('.tsx'))) {
     frameworks.add('React');
   }
-  if (hasNextEvidence) {
+  if (deps.has('next') || files.some((file) => file.startsWith('app/') || file.startsWith('pages/'))) {
     frameworks.add('Next.js');
   }
-  if (deps.has('commander') || deps.has('yargs') || files.some(isNodeCliEntryPoint)) {
+  if (deps.has('commander') || deps.has('yargs') || files.some((file) => file.includes('cli'))) {
     frameworks.add('Node CLI');
   }
   if (files.includes('pyproject.toml')) {
@@ -65,7 +64,6 @@ export function findConfigs(files: string[]): Evidence[] {
     /^\.editorconfig$/,
     /^\.gitignore$/,
     /^eslint\.config\./,
-    /^next\.config\.(js|mjs|cjs|ts)$/,
     /^vitest\.config\./
   ];
 
@@ -82,35 +80,20 @@ export function findConventions(files: string[]): Evidence[] {
 
 export function findEntryPoints(files: string[]): Evidence[] {
   const patterns = [
-    /^src\/index\.(ts|tsx|js|jsx|mjs|cjs)$/,
-    /^src\/cli\.(ts|js|mjs|cjs)$/,
-    /^src\/main\.(ts|js|mjs|cjs|py)$/,
-    /^index\.(ts|tsx|js|jsx|mjs|cjs)$/,
-    /^bin\/[^/]+\.(ts|js|mjs|cjs|py|sh)$/,
-    /^app\/(?:.+\/)?(?:page|layout|route|loading|error|not-found|template|default)\.(ts|tsx|js|jsx)$/,
-    /^pages\/(?!api\/).+\.(ts|tsx|js|jsx)$/,
-    /^pages\/api\/.+\.(ts|js)$/,
-    /^cmd\/.+\.(go|rs|py|ts|js)$/
+    /^src\/index\.(ts|js)$/,
+    /^src\/cli\.(ts|js)$/,
+    /^src\/main\.(ts|js|py)$/,
+    /^index\.(ts|js)$/,
+    /^bin\//,
+    /^app\//,
+    /^pages\//,
+    /^cmd\//
   ];
 
   return files
     .filter((file) => patterns.some((pattern) => pattern.test(file)))
     .slice(0, 12)
     .map((file) => ({ path: file }));
-}
-
-function isNextEntryPoint(file: string): boolean {
-  return /^app\/(?:.+\/)?(?:page|layout|route|loading|error|not-found|template|default)\.(ts|tsx|js|jsx)$/.test(file)
-    || /^pages\/(?:_app|_document|_error)\.(ts|tsx|js|jsx)$/.test(file)
-    || /^pages\/api\/.+\.(ts|js)$/.test(file);
-}
-
-function isNextConfig(file: string): boolean {
-  return /^next\.config\.(js|mjs|cjs|ts)$/.test(file);
-}
-
-function isNodeCliEntryPoint(file: string): boolean {
-  return /^(?:src\/cli|bin\/[^/]+)\.(ts|js|mjs|cjs)$/.test(file);
 }
 
 export function findRisks(files: string[]): Evidence[] {

@@ -1,28 +1,11 @@
 # Changelog
 
-## Unreleased
-
-- Regenerate the README example and the `docs/JSON_SCHEMA.md` handoff example
-  from the live `fixtures/node-cli` scan output, and pin both (plus `--version`
-  against `package.json`) with a documentation regression test.
-- Derive CLI `--version` from `package.json` instead of a hardcoded literal, and
-  make `scripts/verify-package-bin.mjs` execute each declared bin end-to-end
-  (`--version` and `--help`) rather than only checking that the target exists.
-- Separate the import-safe library entrypoint from the executable CLI wrapper,
-  and exclude compiled tests from published packages.
-- Reject unknown CLI options and missing option values, while consistently
-  supporting both spaced and equal-sign option syntax.
-
 All notable changes to this project will be documented in this file.
 
 This project follows the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 format and uses semantic versioning when versioned releases are published.
 
 ## [Unreleased]
-
-### Fixed
-
-- Require React and Next.js-specific evidence instead of inferring frameworks from every TSX file or ordinary `pages/` path.
 
 ### Added
 

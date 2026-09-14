@@ -9,16 +9,16 @@ npm run build >/dev/null
 out_dir="${TMPDIR:-/tmp}/agentprimer-demo"
 mkdir -p "$out_dir"
 
-node dist/src/cli-entry.js scan fixtures/node-cli \
+node dist/src/index.js scan fixtures/node-cli \
   --deterministic \
   --out "$out_dir/node-cli-primer.md"
 
-node dist/src/cli-entry.js suggest-task fixtures/sparse-repo \
+node dist/src/index.js suggest-task fixtures/sparse-repo \
   --max-risk low \
   --deterministic \
   --out "$out_dir/sparse-task.md"
 
-node dist/src/cli-entry.js scan fixtures/python-package \
+node dist/src/index.js scan fixtures/python-package \
   --format json \
   --deterministic > "$out_dir/python-package.json"
 
