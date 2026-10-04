@@ -6,9 +6,9 @@ Show how a coding agent can get a short, evidence-backed repo briefing before ma
 
 ## 60-second flow
 
-1. Run `node dist/src/index.js scan fixtures/node-cli --deterministic --out /tmp/node-cli-primer.md`.
+1. Run `node dist/src/cli-entry.js scan fixtures/node-cli --deterministic --out /tmp/node-cli-primer.md`.
 2. Show stack signals, commands, conventions, likely entry points, and risk notes in the generated Markdown.
-3. Run `node dist/src/index.js suggest-task fixtures/sparse-repo --max-risk low`.
+3. Run `node dist/src/cli-entry.js suggest-task fixtures/sparse-repo --max-risk low`.
 4. Explain the safety model: AgentPrimer reads local files, reports evidence, and does not call an LLM.
 
 ## Claims to avoid

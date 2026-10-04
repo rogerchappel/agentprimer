@@ -15,7 +15,7 @@ npm link
 Or run from a checkout:
 
 ```sh
-node dist/src/index.js scan .
+node dist/src/cli-entry.js scan .
 ```
 
 ## Use
@@ -51,11 +51,11 @@ Example output starts like this:
 ```md
 # Agent Primer: fixture-node-cli
 
-Fixture Node CLI appears to be a Node CLI, TypeScript, JavaScript project.
+Fixture Node CLI appears to be a Node CLI, Markdown, TypeScript project.
 
 ## Stack Signals
 
-- Languages: JavaScript, Markdown, TypeScript
+- Languages: Markdown, TypeScript
 - Frameworks: Node CLI
 - Package manager: npm
 ```

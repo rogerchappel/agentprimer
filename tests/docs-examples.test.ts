@@ -42,22 +42,13 @@ describe('documented examples stay live', () => {
     );
   });
 
-  it('docs/JSON_SCHEMA.md handoff example matches the real fixture handoff', () => {
-    const documented = JSON.parse(fencedBlockAfter(jsonSchema, '## Handoff Shape', 'json')) as {
-      score: number;
-      checks: { id: string }[];
-    };
-    const actual = JSON.parse(runCli('scan', 'fixtures/node-cli', '--format', 'json', '--deterministic')).handoff as {
-      score: number;
-      checks: Record<string, unknown>[];
-    };
-
-    assert.equal(documented.score, actual.score);
-    for (const documentedCheck of documented.checks) {
-      const realCheck = actual.checks.find((check) => check.id === documentedCheck.id);
-      assert.ok(realCheck, `documented check id ${documentedCheck.id} is not emitted by the scanner`);
-      assert.deepEqual(documentedCheck, realCheck);
+  it('JSON_SCHEMA documents the actual JSON output fields', () => {
+    const output = JSON.parse(runCli('scan', 'fixtures/node-cli', '--format', 'json', '--deterministic')) as Record<string, unknown>;
+    for (const field of ['schemaVersion', 'generatedAt', 'root', 'name', 'summary', 'commands', 'entryPoints']) {
+      assert.ok(jsonSchema.includes(`\`${field}\``), `JSON_SCHEMA.md does not document ${field}`);
+      assert.ok(field in output, `scanner output is missing documented field ${field}`);
     }
+    assert.doesNotMatch(jsonSchema, /Handoff Shape|handoff object/);
   });
 
   it('--version reports the package.json version', () => {
