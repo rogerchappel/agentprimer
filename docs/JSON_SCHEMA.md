@@ -31,3 +31,8 @@
 ```
 
 `detail` is optional. Paths are repository-relative except `root`.
+
+## Output Example
+
+Use the `commands`, `entryPoints`, and other top-level fields above as the
+machine-readable onboarding summary.
