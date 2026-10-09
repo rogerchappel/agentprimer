@@ -2,15 +2,21 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
+import { parseDocument } from 'yaml';
 
 const workflowPath = resolve('.github/workflows/release.yml');
 
 test('release workflow only publishes version tags', async () => {
   const workflow = await readFile(workflowPath, 'utf8');
+  const document = parseDocument(workflow, { uniqueKeys: true });
+  assert.deepEqual(document.errors, [], 'release workflow must be valid YAML');
+  const parsed = document.toJS() as {
+    on: { push?: { tags?: string[] }; workflow_dispatch?: unknown; pull_request?: unknown };
+  };
 
-  assert.match(workflow, /push:\s*\n\s+tags:\s*\n\s+- 'v\*\.\*\.\*'/);
-  assert.doesNotMatch(workflow, /workflow_dispatch:/);
-  assert.doesNotMatch(workflow, /pull_request:/);
+  assert.deepEqual(parsed.on?.push?.tags, ['v*.*.*']);
+  assert.equal(parsed.on?.workflow_dispatch, undefined);
+  assert.equal(parsed.on?.pull_request, undefined);
 });
 
 test('release workflow publishes before creating the GitHub release', async () => {
