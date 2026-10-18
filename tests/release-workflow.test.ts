@@ -6,6 +6,46 @@ import { parseDocument } from 'yaml';
 
 const workflowPath = resolve('.github/workflows/release.yml');
 
+const dryRunWorkflowPath = resolve('.github/workflows/release-dry-run.yml');
+
+async function readWorkflow(path: string) {
+  const source = await readFile(path, 'utf8');
+  const document = parseDocument(source, { uniqueKeys: true });
+  assert.deepEqual(document.errors, [], `${path} must be valid YAML`);
+  return document.toJS() as {
+    on?: Record<string, unknown>;
+    permissions?: Record<string, string>;
+    jobs?: Record<string, { steps?: Array<{ run?: string }> }>;
+  };
+}
+
+test('release workflows keep publishing limited to version-tag pushes', async () => {
+  const release = await readWorkflow(workflowPath);
+  const dryRun = await readWorkflow(dryRunWorkflowPath);
+
+  assert.deepEqual(release.on?.push, { tags: ['v*.*.*'] });
+  assert.equal(release.on?.workflow_dispatch, undefined);
+  assert.equal(release.on?.pull_request, undefined);
+  assert.ok(Object.hasOwn(dryRun.on ?? {}, 'workflow_dispatch'), 'dry-run must support manual validation');
+  assert.ok(Object.hasOwn(dryRun.on ?? {}, 'pull_request'), 'dry-run must validate relevant pull requests');
+  assert.equal(dryRun.on?.push, undefined, 'dry-run must not publish on pushes');
+});
+
+test('only the release workflow requests write and npm publish permissions', async () => {
+  const release = await readWorkflow(workflowPath);
+  const dryRun = await readWorkflow(dryRunWorkflowPath);
+
+  assert.deepEqual(release.permissions, { contents: 'write', 'id-token': 'write' });
+  assert.deepEqual(dryRun.permissions, { contents: 'read' });
+  const releaseCommands = Object.values(release.jobs ?? {}).flatMap((job) => job.steps ?? [])
+    .map((step) => step.run ?? '').join('\n');
+  const dryRunCommands = Object.values(dryRun.jobs ?? {}).flatMap((job) => job.steps ?? [])
+    .map((step) => step.run ?? '').join('\n');
+
+  assert.match(releaseCommands, /npm publish\b/);
+  assert.doesNotMatch(dryRunCommands, /\bnpm publish\b|\bgh release create\b/);
+});
+
 test('release workflow only publishes version tags', async () => {
   const workflow = await readFile(workflowPath, 'utf8');
   const document = parseDocument(workflow, { uniqueKeys: true });
